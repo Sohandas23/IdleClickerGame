@@ -26,11 +26,9 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        // ✅ FIX: Load first
         saveData = SaveSystem.Load();
         if (saveData == null)
-            saveData = new SaveData(); // create default if no file
+            saveData = new SaveData(); 
 
         Coins = saveData.coins;
 
@@ -43,7 +41,7 @@ public class GameManager : MonoBehaviour
                 upgrades[type] = type == UpgradeType.TapMultiplier ? 1 : 0;
         }
 
-        upgrades[UpgradeType.TapMultiplier] = 1; // optional default safety
+        upgrades[UpgradeType.TapMultiplier] = 1; 
     }
 
     public int GetUpgradeLevel(UpgradeType type)
@@ -81,7 +79,7 @@ public class GameManager : MonoBehaviour
             if (saveData.upgradeLevels.ContainsKey(key))
                 upgrades[type] = saveData.upgradeLevels[key];
             else
-                upgrades[type] = type == UpgradeType.TapMultiplier ? 1 : 0; // Default
+                upgrades[type] = type == UpgradeType.TapMultiplier ? 1 : 0; 
         }
 
         OnCoinsChanged?.Invoke(Coins);
@@ -108,8 +106,18 @@ public class GameManager : MonoBehaviour
 
         SaveSystem.Save(saveData);
     }
+    public void SetUpgradeLevel(UpgradeType type, int level)
+    {
+        if (upgrades.ContainsKey(type))
+            upgrades[type] = level;
+        else
+            upgrades.Add(type, level);
 
-    private void AddCoins(float amount)
+        OnCoinsChanged?.Invoke(Coins);
+        OnUpgradesLoaded?.Invoke();
+    }
+
+    public void AddCoins(float amount)
     {
         Coins += amount;
         if (OnCoinsChanged == null)
