@@ -1,0 +1,4 @@
+repository "IdleClickerGame/IdleClickerGame@13469461188674@cloud"
+  path "/"
+    br "/main"
+    co "/main"
