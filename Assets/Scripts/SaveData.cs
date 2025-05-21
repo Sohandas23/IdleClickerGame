@@ -8,3 +8,4 @@ public class SaveData
     public Dictionary<string, int> upgradeLevels = new();
     public long lastSessionTicks;
 }
+

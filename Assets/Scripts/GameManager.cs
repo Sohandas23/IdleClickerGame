@@ -119,8 +119,15 @@ public class GameManager : MonoBehaviour
         OnCoinsChanged?.Invoke(Coins);
     }
 
-    public void TapCollect() => AddCoins(1 * TapMultiplier);
+    public void TapCollect()
+    {
+        var amount = 1 * TapMultiplier;
+        AddCoins(amount);
 
+        // Floating coin animation
+        Vector2 screenPos = Input.mousePosition;
+        FloatingCoinManager.Instance?.SpawnFloatingCoin(screenPos, Mathf.RoundToInt(amount));
+    }
     private void AutoCollect()
     {
         float value = upgrades[UpgradeType.AutoCollector];
