@@ -18,35 +18,33 @@ public class GameManager : MonoBehaviour
     
     public event Action OnUpgradesLoaded;
 
-   private void Awake()
-{
-    if (Instance == null) Instance = this;
-    else
+    private void Awake()
     {
-        Destroy(gameObject);
-        return;
-    }
-
-    // ✅ Now it's safe to load
-    saveData = SaveSystem.Load();
-    if (saveData == null)
-        saveData = new SaveData();
-
-    Coins = saveData.coins;
-
-    foreach (UpgradeType type in System.Enum.GetValues(typeof(UpgradeType)))
-    {
-        string key = type.ToString();
-        if (saveData.upgradeLevels.ContainsKey(key))
-            upgrades[type] = saveData.upgradeLevels[key];
+        if (Instance == null) Instance = this;
         else
-            upgrades[type] = type == UpgradeType.TapMultiplier ? 1 : 0;
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // ✅ FIX: Load first
+        saveData = SaveSystem.Load();
+        if (saveData == null)
+            saveData = new SaveData(); // create default if no file
+
+        Coins = saveData.coins;
+
+        foreach (UpgradeType type in System.Enum.GetValues(typeof(UpgradeType)))
+        {
+            string key = type.ToString();
+            if (saveData.upgradeLevels.ContainsKey(key))
+                upgrades[type] = saveData.upgradeLevels[key];
+            else
+                upgrades[type] = type == UpgradeType.TapMultiplier ? 1 : 0;
+        }
+
+        upgrades[UpgradeType.TapMultiplier] = 1; // optional default safety
     }
-
-    OnCoinsChanged?.Invoke(Coins);
-    OnUpgradesLoaded?.Invoke(); // For UI
-}
-
 
     public int GetUpgradeLevel(UpgradeType type)
     {
